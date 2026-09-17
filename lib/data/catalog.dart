@@ -16,9 +16,10 @@ class StoreItem {
 }
 
 class ProductItem {
-  const ProductItem({required this.name, required this.store, required this.price, required this.imagePath});
+  const ProductItem({required this.name, required this.store, required this.category, required this.price, required this.imagePath});
   final String name;
   final String store;
+  final String category;
   final double price;
   final String imagePath;
 }
@@ -39,8 +40,8 @@ const stores = [
 ];
 
 const products = [
-  ProductItem(name: 'Everyday Oversized Tee', store: 'NOIR', price: 149, imagePath: 'assets/images/product-tee.webp'),
-  ProductItem(name: 'Sculpted Table Lamp', store: 'FORM', price: 320, imagePath: 'assets/images/product-lamp.webp'),
-  ProductItem(name: 'Signature Skin Set', store: 'NAYA', price: 210, imagePath: 'assets/images/product-skincare.webp'),
-  ProductItem(name: 'Handmade Travel Pouch', store: 'CRAFT', price: 95, imagePath: 'assets/images/product-pouch.webp'),
+  ProductItem(name: 'Everyday Oversized Tee', store: 'NOIR', category: 'Fashion', price: 149, imagePath: 'assets/images/product-tee.webp'),
+  ProductItem(name: 'Sculpted Table Lamp', store: 'FORM', category: 'Home', price: 320, imagePath: 'assets/images/product-lamp.webp'),
+  ProductItem(name: 'Signature Skin Set', store: 'NAYA', category: 'Beauty', price: 210, imagePath: 'assets/images/product-skincare.webp'),
+  ProductItem(name: 'Handmade Travel Pouch', store: 'CRAFT', category: 'Fashion', price: 95, imagePath: 'assets/images/product-pouch.webp'),
 ];

@@ -14,10 +14,15 @@ class ExplorePage extends StatefulWidget {
 
 class _ExplorePageState extends State<ExplorePage> {
   String query = '';
+  String? selectedCategory;
 
   @override
   Widget build(BuildContext context) {
-    final filtered = products.where((item) => '${item.name} ${item.store}'.toLowerCase().contains(query.toLowerCase())).toList();
+    final filtered = products.where((item) {
+      final matchesSearch = '${item.name} ${item.store} ${item.category}'.toLowerCase().contains(query.toLowerCase());
+      final matchesCategory = selectedCategory == null || item.category == selectedCategory;
+      return matchesSearch && matchesCategory;
+    }).toList();
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
@@ -33,9 +38,24 @@ class _ExplorePageState extends State<ExplorePage> {
             height: 42,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
+              itemCount: categories.length + 1,
               separatorBuilder: (_, __) => const SizedBox(width: 8),
-              itemBuilder: (_, i) => ActionChip(label: Text(categories[i].name), avatar: Icon(categories[i].icon, size: 17), onPressed: () => setState(() => query = categories[i].name)),
+              itemBuilder: (_, i) {
+                if (i == 0) {
+                  return FilterChip(
+                    label: const Text('All'),
+                    selected: selectedCategory == null,
+                    onSelected: (_) => setState(() => selectedCategory = null),
+                  );
+                }
+                final category = categories[i - 1];
+                return FilterChip(
+                  label: Text(category.name),
+                  avatar: Icon(category.icon, size: 17),
+                  selected: selectedCategory == category.name,
+                  onSelected: (_) => setState(() => selectedCategory = category.name),
+                );
+              },
             ),
           ),
           const SizedBox(height: 18),
