@@ -1,0 +1,11 @@
+{
+  "name": "Tajer Avenue",
+  "short_name": "Tajer Avenue",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F7F7F5",
+  "theme_color": "#111111",
+  "description": "UAE digital marketplace",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
+}
