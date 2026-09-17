@@ -41,7 +41,17 @@ class StoresPage extends StatelessWidget {
         builder: (_) => Scaffold(
           appBar: AppBar(title: Text(store.name)),
           body: ListView(padding: const EdgeInsets.all(20), children: [
-            Container(height: 170, decoration: BoxDecoration(color: Brand.ink, borderRadius: BorderRadius.circular(26)), child: Center(child: Text(store.name, style: const TextStyle(color: Colors.white, fontSize: 38, fontWeight: FontWeight.w900)))),
+            Container(
+              height: 210,
+              decoration: BoxDecoration(
+                color: Brand.ink,
+                borderRadius: BorderRadius.circular(26),
+                image: store.imagePath == null ? null : DecorationImage(image: AssetImage(store.imagePath!), fit: BoxFit.cover),
+              ),
+              alignment: Alignment.bottomLeft,
+              padding: const EdgeInsets.all(20),
+              child: Text(store.name, style: const TextStyle(color: Colors.white, fontSize: 38, fontWeight: FontWeight.w900, shadows: [Shadow(blurRadius: 12, color: Colors.black)])),
+            ),
             const SizedBox(height: 20),
             Text(store.type, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
             Text('${store.city}, UAE', style: const TextStyle(color: Brand.muted)),

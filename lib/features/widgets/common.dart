@@ -43,7 +43,7 @@ class ProductCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Expanded(child: Stack(children: [
-            Positioned.fill(child: Container(color: const Color(0xFFEAE8E2), child: const Icon(Icons.inventory_2_outlined, size: 48))),
+            Positioned.fill(child: Image.asset(product.imagePath, fit: BoxFit.cover)),
             Positioned(right: 8, top: 8, child: IconButton.filledTonal(onPressed: onFavorite, icon: Icon(isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded))),
           ])),
           Padding(
