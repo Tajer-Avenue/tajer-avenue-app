@@ -32,7 +32,14 @@ class HomePage extends StatelessWidget {
             Container(
               height: 190,
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(color: Brand.ink, borderRadius: BorderRadius.circular(28)),
+              decoration: BoxDecoration(
+                color: Brand.ink,
+                borderRadius: BorderRadius.circular(28),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/home-hero.webp'),
+                  fit: BoxFit.cover,
+                ),
+              ),
               child: const Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.end, children: [
                 Text(Brand.tagline, style: TextStyle(color: Colors.white60, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.4)),
                 SizedBox(height: 8),
@@ -44,7 +51,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 24),
             SectionTitle('Explore', action: 'See all', onTap: onExplore),
             SizedBox(
-              height: 88,
+              height: 112,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
@@ -53,12 +60,15 @@ class HomePage extends StatelessWidget {
                   onTap: onExplore,
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
-                    width: 78,
+                    width: 92,
+                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(color: Brand.surface, borderRadius: BorderRadius.circular(20)),
-                    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Icon(categories[i].icon),
-                      const SizedBox(height: 8),
-                      Text(categories[i].name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                    child: Column(children: [
+                      Expanded(child: Image.asset(categories[i].imagePath, width: double.infinity, fit: BoxFit.cover)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 7),
+                        child: Text(categories[i].name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                      ),
                     ]),
                   ),
                 ),
@@ -117,7 +127,14 @@ class _StorePreview extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(color: Brand.surface, borderRadius: BorderRadius.circular(24)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Expanded(child: Container(decoration: BoxDecoration(color: const Color(0xFFEAE8E2), borderRadius: BorderRadius.circular(17)), child: Center(child: Text(store.name[0], style: const TextStyle(fontSize: 38, fontWeight: FontWeight.w900))))),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(17),
+              child: store.imagePath == null
+                  ? Container(color: const Color(0xFFEAE8E2), child: Center(child: Text(store.name[0], style: const TextStyle(fontSize: 38, fontWeight: FontWeight.w900))))
+                  : Image.asset(store.imagePath!, width: double.infinity, fit: BoxFit.cover),
+            ),
+          ),
           const SizedBox(height: 9),
           Text(store.name, style: const TextStyle(fontWeight: FontWeight.w800)),
           Text('${store.type} · ${store.city}', style: const TextStyle(fontSize: 11, color: Brand.muted)),
