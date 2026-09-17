@@ -65,6 +65,45 @@ Initial merchant flows:
 - Backend: Supabase
 - Repository: Tajer-Avenue/tajer-avenue-app
 
+## Delivery phases
+
+### Phase 1 — App foundation
+
+- Centralized brand and theme tokens
+- Feature-based Flutter structure
+- Customer shell and working navigation
+- Mock catalog, local search, favorites, stores, and cart entry point
+
+### Phase 2 — Supabase foundation
+
+- Development and production environments
+- Authentication and user profiles
+- Database schema, storage buckets, and row-level security
+- Repository/data layer and error handling
+
+### Phase 3 — Customer commerce
+
+- Store, product, and service detail flows
+- Shared multi-store cart
+- Checkout, addresses, UAE delivery rules, and payments
+- Orders, reviews, notifications, and deep links
+
+### Phase 4 — Merchant system
+
+- Merchant onboarding and automatic storefront creation
+- Store themes and customization
+- Product/service management, inventory, orders, and analytics
+- Subscription plans and merchant billing
+
+### Phase 5 — Release readiness
+
+- Arabic and English localization
+- Accessibility, analytics, crash reporting, tests, and performance
+- Legal name review, privacy/terms, App Store and Play Store release
+
 ## Development principle
 
 Build Tajer Avenue independently. Do not couple this repository to the DEV Website project.
+
+The working name, logo, colors, and customer-facing copy must remain centralized
+and replaceable until the final legal review is complete.
