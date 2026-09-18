@@ -5,7 +5,12 @@ import 'core/theme.dart';
 import 'features/app_shell.dart';
 
 class TajerAvenueApp extends StatelessWidget {
-  const TajerAvenueApp({super.key});
+  const TajerAvenueApp({
+    super.key,
+    this.openAccountOnLaunch = false,
+  });
+
+  final bool openAccountOnLaunch;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +18,7 @@ class TajerAvenueApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: Brand.name,
       theme: buildAppTheme(),
-      home: const AppShell(),
+      home: AppShell(openAccountOnLaunch: openAccountOnLaunch),
     );
   }
 }
