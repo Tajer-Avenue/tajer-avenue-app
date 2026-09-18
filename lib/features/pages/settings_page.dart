@@ -87,7 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancel'),
+            child: Text(_text('Cancel', 'إلغاء')),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
