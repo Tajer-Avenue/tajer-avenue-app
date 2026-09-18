@@ -4,9 +4,10 @@ import '../../data/catalog.dart';
 import '../widgets/common.dart';
 
 class ExplorePage extends StatefulWidget {
-  const ExplorePage({required this.favorites, required this.onToggleFavorite, super.key});
+  const ExplorePage({required this.favorites, required this.onToggleFavorite, required this.preferredGender, super.key});
   final Set<String> favorites;
   final ValueChanged<ProductItem> onToggleFavorite;
+  final String? preferredGender;
 
   @override
   State<ExplorePage> createState() => _ExplorePageState();
@@ -23,6 +24,22 @@ class _ExplorePageState extends State<ExplorePage> {
       final matchesCategory = selectedCategory == null || item.category == selectedCategory;
       return matchesSearch && matchesCategory;
     }).toList();
+
+    int productPriority(ProductItem item) {
+      if (widget.preferredGender == 'female') {
+        if (item.category == 'Beauty') return 0;
+        if (item.category == 'Fashion') return 1;
+      } else if (widget.preferredGender == 'male') {
+        if (item.category == 'Fashion') return 0;
+        if (item.category == 'Services') return 1;
+      }
+      return 2 + products.indexOf(item);
+    }
+
+    filtered.sort(
+      (a, b) => productPriority(a).compareTo(productPriority(b)),
+    );
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
