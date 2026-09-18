@@ -184,7 +184,7 @@ class _AuthPageState extends State<AuthPage> {
           const Icon(
             Icons.mark_email_read_outlined,
             size: 72,
-            color: Brand.teal,
+            color: Brand.accent,
           ),
           const SizedBox(height: 24),
           const Text(
