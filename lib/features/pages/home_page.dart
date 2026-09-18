@@ -8,17 +8,47 @@ class HomePage extends StatelessWidget {
   const HomePage({
     required this.onExplore,
     required this.isArabic,
+    required this.preferredGender,
     super.key,
   });
 
   final VoidCallback onExplore;
   final bool isArabic;
+  final String? preferredGender;
 
   String _text(String english, String arabic) =>
       isArabic ? arabic : english;
 
   @override
-  Widget build(BuildContext context) => SafeArea(
+  Widget build(BuildContext context) {
+    final personalizedCategories = [...categories];
+    final personalizedStores = [...stores];
+
+    int categoryPriority(CategoryItem item) {
+      if (preferredGender == 'female') {
+        if (item.name == 'Beauty') return 0;
+        if (item.name == 'Fashion') return 1;
+      } else if (preferredGender == 'male') {
+        if (item.name == 'Fashion') return 0;
+        if (item.name == 'Services') return 1;
+      }
+      return 2 + categories.indexOf(item);
+    }
+
+    int storePriority(StoreItem item) {
+      if (preferredGender == 'female' && item.type == 'Beauty') return 0;
+      if (preferredGender == 'male' && item.type == 'Streetwear') return 0;
+      return 1 + stores.indexOf(item);
+    }
+
+    personalizedCategories.sort(
+      (a, b) => categoryPriority(a).compareTo(categoryPriority(b)),
+    );
+    personalizedStores.sort(
+      (a, b) => storePriority(a).compareTo(storePriority(b)),
+    );
+
+    return SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
           children: [
@@ -78,7 +108,7 @@ class HomePage extends StatelessWidget {
               height: 112,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
+                itemCount: personalizedCategories.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (_, i) => InkWell(
                   onTap: onExplore,
@@ -88,10 +118,10 @@ class HomePage extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(color: Brand.surface, borderRadius: BorderRadius.circular(20)),
                     child: Column(children: [
-                      Expanded(child: Image.asset(categories[i].imagePath, width: double.infinity, fit: BoxFit.cover)),
+                      Expanded(child: Image.asset(personalizedCategories[i].imagePath, width: double.infinity, fit: BoxFit.cover)),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 7),
-                        child: Text(categories[i].name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                        child: Text(personalizedCategories[i].name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
                       ),
                     ]),
                   ),
@@ -102,9 +132,9 @@ class HomePage extends StatelessWidget {
             SectionTitle(_text('Trending stores', 'المتاجر الرائجة')),
             const SizedBox(height: 10),
             Row(children: [
-              Expanded(child: _StorePreview(store: stores[0])),
+              Expanded(child: _StorePreview(store: personalizedStores[0])),
               const SizedBox(width: 12),
-              Expanded(child: _StorePreview(store: stores[1])),
+              Expanded(child: _StorePreview(store: personalizedStores[1])),
             ]),
             const SizedBox(height: 26),
             SectionTitle(_text('Nearby', 'بالقرب منك')),
@@ -124,6 +154,7 @@ class HomePage extends StatelessWidget {
           ],
         ),
       );
+  }
 
   void _showCart(BuildContext context) => showModalBottomSheet<void>(
         context: context,
