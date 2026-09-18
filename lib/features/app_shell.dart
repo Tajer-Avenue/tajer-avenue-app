@@ -364,7 +364,7 @@ class _AppShellState extends State<AppShell> {
                 controlAffinity: ListTileControlAffinity.trailing,
                 secondary: const Text('🇬🇧', style: TextStyle(fontSize: 24)),
                 title: const Text(
-                  'English',
+                  _text('English', 'الإنجليزية'),
                   style: TextStyle(fontWeight: FontWeight.w800),
                 ),
                 onChanged: (value) {
