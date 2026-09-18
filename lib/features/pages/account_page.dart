@@ -11,10 +11,12 @@ class AccountPage extends StatefulWidget {
     super.key,
     required this.onOpenSignIn,
     required this.onOpenCreateAccount,
+    required this.onOpenMenu,
   });
 
   final VoidCallback onOpenSignIn;
   final VoidCallback onOpenCreateAccount;
+  final VoidCallback onOpenMenu;
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -52,9 +54,24 @@ class _AccountPageState extends State<AccountPage> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
         children: [
-          const PageHeading(
-            'Account',
-            subtitle: 'Shop, sell and manage your activity',
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Expanded(
+                  child: PageHeading(
+                    'Account',
+                    subtitle: 'Shop, sell and manage your activity',
+                  ),
+                ),
+                IconButton.filledTonal(
+                  onPressed: widget.onOpenMenu,
+                  tooltip: 'Menu',
+                  icon: const Icon(Icons.menu_rounded),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 24),
           Container(
