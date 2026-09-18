@@ -363,9 +363,9 @@ class _AppShellState extends State<AppShell> {
                 activeColor: Brand.accent,
                 controlAffinity: ListTileControlAffinity.trailing,
                 secondary: const Text('🇬🇧', style: TextStyle(fontSize: 24)),
-                title: const Text(
+                title: Text(
                   _text('English', 'الإنجليزية'),
-                  style: TextStyle(fontWeight: FontWeight.w800),
+                  style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
                 onChanged: (value) {
                   if (value != null) _setLanguage(value);
