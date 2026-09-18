@@ -163,8 +163,17 @@ class _AppShellState extends State<AppShell> {
             padding: EdgeInsets.zero,
             children: [
               Container(
-                color: Brand.ink,
-                padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Brand.ink, Color(0xFF2C2418)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  border: Border(
+                    bottom: BorderSide(color: Brand.accent, width: 3),
+                  ),
+                ),
+                padding: const EdgeInsets.fromLTRB(24, 30, 24, 26),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -172,68 +181,122 @@ class _AppShellState extends State<AppShell> {
                       Brand.wordmark,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 28,
+                        fontSize: 30,
                         fontWeight: FontWeight.w900,
-                        letterSpacing: 2,
+                        letterSpacing: 2.4,
                       ),
                     ),
+                    SizedBox(height: 3),
                     Text(
                       Brand.submark,
                       style: TextStyle(
-                        color: Colors.white60,
+                        color: Brand.accent,
                         fontSize: 11,
-                        letterSpacing: 2,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 2.2,
                       ),
                     ),
                   ],
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.settings_outlined),
-                title: Text(_text('Settings', 'الإعدادات')),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 15),
+              const SizedBox(height: 10),
+              _drawerTile(
+                icon: Icons.settings_outlined,
+                label: _text('Settings', 'الإعدادات'),
                 onTap: () {
                   Navigator.of(context).pop();
                   _openSettings();
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.report_problem_outlined),
-                title: Text(_text('Report a problem', 'الإبلاغ عن مشكلة')),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 15),
+              _drawerTile(
+                icon: Icons.report_problem_outlined,
+                label: _text('Report a problem', 'الإبلاغ عن مشكلة'),
                 onTap: () {
                   Navigator.of(context).pop();
                   _openReportProblem();
                 },
               ),
-              const Divider(),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                child: Divider(),
+              ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+                padding: const EdgeInsets.fromLTRB(24, 6, 24, 8),
                 child: Text(
                   _text('Language', 'اللغة'),
                   style: const TextStyle(
-                    color: Brand.muted,
-                    fontWeight: FontWeight.w800,
+                    color: Brand.ink,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
               ),
               RadioListTile<bool>(
-                value: false,
-                groupValue: _isArabic,
-                onChanged: (value) {
-                  if (value != null) _setLanguage(value);
-                },
-                title: const Text('English'),
-              ),
-              RadioListTile<bool>(
                 value: true,
                 groupValue: _isArabic,
+                activeColor: Brand.accent,
+                controlAffinity: ListTileControlAffinity.trailing,
+                secondary: const Text('🇦🇪', style: TextStyle(fontSize: 24)),
+                title: const Text(
+                  'العربية',
+                  style: TextStyle(fontWeight: FontWeight.w800),
+                ),
                 onChanged: (value) {
                   if (value != null) _setLanguage(value);
                 },
-                title: const Text('العربية'),
+              ),
+              RadioListTile<bool>(
+                value: false,
+                groupValue: _isArabic,
+                activeColor: Brand.accent,
+                controlAffinity: ListTileControlAffinity.trailing,
+                secondary: const Text('🇬🇧', style: TextStyle(fontSize: 24)),
+                title: const Text(
+                  'English',
+                  style: TextStyle(fontWeight: FontWeight.w800),
+                ),
+                onChanged: (value) {
+                  if (value != null) _setLanguage(value);
+                },
               ),
             ],
+          ),
+        ),
+      );
+
+  Widget _drawerTile({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+        child: Material(
+          color: Brand.surface,
+          borderRadius: BorderRadius.circular(16),
+          child: ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            leading: Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: Brand.accent.withValues(alpha: 0.16),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: Brand.ink),
+            ),
+            title: Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 14,
+              color: Brand.accent,
+            ),
+            onTap: onTap,
           ),
         ),
       );
