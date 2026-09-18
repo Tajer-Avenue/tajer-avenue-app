@@ -22,12 +22,20 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   late int _index;
+  bool _authStartsWithSignUp = false;
   final Set<String> _favorites = {};
 
   @override
   void initState() {
     super.initState();
     _index = widget.openAccountOnLaunch ? 4 : 0;
+  }
+
+  void _openAuth({required bool signUp}) {
+    setState(() {
+      _authStartsWithSignUp = signUp;
+      _index = 5;
+    });
   }
 
   void _toggleFavorite(ProductItem product) {
@@ -51,8 +59,15 @@ class _AppShellState extends State<AppShell> {
         onToggleFavorite: _toggleFavorite,
       ),
       const StoresPage(),
-      AccountPage(onOpenAuth: () => setState(() => _index = 5)),
-      AuthPage(onBack: () => setState(() => _index = 4)),
+      AccountPage(
+        onOpenSignIn: () => _openAuth(signUp: false),
+        onOpenCreateAccount: () => _openAuth(signUp: true),
+      ),
+      AuthPage(
+        key: ValueKey(_authStartsWithSignUp),
+        initialSignUp: _authStartsWithSignUp,
+        onBack: () => setState(() => _index = 4),
+      ),
     ];
 
     return Scaffold(
