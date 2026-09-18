@@ -27,7 +27,7 @@ class _ExplorePageState extends State<ExplorePage> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const PageHeading('Explore', subtitle: 'Products, services and local discoveries'),
+          const PageHeading('Categories', subtitle: 'Browse products and services by category'),
           const SizedBox(height: 18),
           TextField(
             onChanged: (value) => setState(() => query = value.trim()),
