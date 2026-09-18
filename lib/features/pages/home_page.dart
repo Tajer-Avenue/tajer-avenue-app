@@ -14,6 +14,10 @@ class HomePage extends StatelessWidget {
 
   final VoidCallback onExplore;
   final bool isArabic;
+
+  String _categoryLabel(String name) => isArabic ? const {'Fashion':'الأزياء','Beauty':'الجمال','Food':'الطعام','Services':'الخدمات','Home':'المنزل'}[name] ?? name : name;
+  String _storeType(String type) => isArabic ? const {'Streetwear':'أزياء الشارع','Home & Living':'المنزل والمعيشة','Beauty':'الجمال','Local Makers':'صنّاع محليون'}[type] ?? type : type;
+  String _city(String city) => isArabic ? const {'Dubai':'دبي','Abu Dhabi':'أبوظبي','Sharjah':'الشارقة','Ajman':'عجمان'}[city] ?? city : city;
   final String? preferredGender;
 
   String _text(String english, String arabic) =>
@@ -121,7 +125,7 @@ class HomePage extends StatelessWidget {
                       Expanded(child: Image.asset(personalizedCategories[i].imagePath, width: double.infinity, fit: BoxFit.cover)),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 7),
-                        child: Text(personalizedCategories[i].name, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                        child: Text(_categoryLabel(personalizedCategories[i].name), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
                       ),
                     ]),
                   ),
@@ -132,9 +136,9 @@ class HomePage extends StatelessWidget {
             SectionTitle(_text('Trending stores', 'المتاجر الرائجة')),
             const SizedBox(height: 10),
             Row(children: [
-              Expanded(child: _StorePreview(store: personalizedStores[0])),
+              Expanded(child: _StorePreview(store: personalizedStores[0], isArabic: isArabic)),
               const SizedBox(width: 12),
-              Expanded(child: _StorePreview(store: personalizedStores[1])),
+              Expanded(child: _StorePreview(store: personalizedStores[1], isArabic: isArabic)),
             ]),
             const SizedBox(height: 26),
             SectionTitle(_text('Nearby', 'بالقرب منك')),
@@ -173,8 +177,11 @@ class HomePage extends StatelessWidget {
 }
 
 class _StorePreview extends StatelessWidget {
-  const _StorePreview({required this.store});
+  const _StorePreview({required this.store, required this.isArabic});
   final StoreItem store;
+  final bool isArabic;
+  String _type(String type) => isArabic ? const {'Streetwear':'أزياء الشارع','Home & Living':'المنزل والمعيشة','Beauty':'الجمال','Local Makers':'صنّاع محليون'}[type] ?? type : type;
+  String _city(String city) => isArabic ? const {'Dubai':'دبي','Abu Dhabi':'أبوظبي','Sharjah':'الشارقة','Ajman':'عجمان'}[city] ?? city : city;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -192,7 +199,7 @@ class _StorePreview extends StatelessWidget {
           ),
           const SizedBox(height: 9),
           Text(store.name, style: const TextStyle(fontWeight: FontWeight.w800)),
-          Text('${store.type} · ${store.city}', style: const TextStyle(fontSize: 11, color: Brand.muted)),
+          Text('${_type(store.type)} · ${_city(store.city)}', style: const TextStyle(fontSize: 11, color: Brand.muted)),
         ]),
       );
 }
