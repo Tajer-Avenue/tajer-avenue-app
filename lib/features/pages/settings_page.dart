@@ -4,7 +4,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/brand.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  const SettingsPage({required this.isArabic, super.key});
+
+  final bool isArabic;
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -13,10 +15,12 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool _loading = false;
 
+  String _text(String en, String ar) => widget.isArabic ? ar : en;
+
   String _genderLabel(String? gender) {
-    if (gender == 'male') return 'Male';
-    if (gender == 'female') return 'Female';
-    return 'Not set';
+    if (gender == 'male') return _text('Male', 'ذكر');
+    if (gender == 'female') return _text('Female', 'أنثى');
+    return _text('Not set', 'غير محدد');
   }
 
   Future<void> _changeGender() async {
@@ -30,7 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: const Text('Gender'),
+          title: Text(_text('Gender', 'الجنس')),
           contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -38,7 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
               RadioListTile<String>(
                 value: 'male',
                 groupValue: selectedGender,
-                title: const Text('Male'),
+                title: Text(_text('Male', 'ذكر')),
                 onChanged: (value) {
                   if (value != null) {
                     setDialogState(() => selectedGender = value);
@@ -48,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
               RadioListTile<String>(
                 value: 'female',
                 groupValue: selectedGender,
-                title: const Text('Female'),
+                title: Text(_text('Female', 'أنثى')),
                 onChanged: (value) {
                   if (value != null) {
                     setDialogState(() => selectedGender = value);
@@ -60,11 +64,11 @@ class _SettingsPageState extends State<SettingsPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
+              child: Text(_text('Cancel', 'إلغاء')),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(selectedGender),
-              child: const Text('Continue'),
+              child: Text(_text('Continue', 'متابعة')),
             ),
           ],
         ),
@@ -76,10 +80,9 @@ class _SettingsPageState extends State<SettingsPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Change gender?'),
+        title: Text(_text('Change gender?', 'تغيير الجنس؟')),
         content: Text(
-          'Are you sure you want to change your gender to '
-          '${_genderLabel(newGender)}? Your recommendations will be updated.',
+          _text('Are you sure you want to change your gender to ${_genderLabel(newGender)}? Your recommendations will be updated.', 'هل أنت متأكد من تغيير الجنس إلى ${_genderLabel(newGender)}؟ سيتم تحديث توصياتك.'),
         ),
         actions: [
           TextButton(
@@ -88,7 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Yes, change'),
+            child: Text(_text('Yes, change', 'نعم، غيّر')),
           ),
         ],
       ),
@@ -106,9 +109,7 @@ class _SettingsPageState extends State<SettingsPage> {
       if (!mounted) return;
       setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Gender and recommendations updated.'),
-        ),
+        SnackBar(content: Text(_text('Gender and recommendations updated.', 'تم تحديث الجنس والتوصيات.'))),
       );
     } on AuthException catch (error) {
       if (!mounted) return;
@@ -126,7 +127,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final gender = user?.userMetadata?['gender']?.toString();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(_text('Settings', 'الإعدادات'))),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
@@ -137,7 +138,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 color: Brand.surface,
                 child: ListTile(
                   leading: const Icon(Icons.person_outline_rounded),
-                  title: const Text('Gender'),
+                  title: Text(_text('Gender', 'الجنس')),
                   subtitle: Text(_genderLabel(gender)),
                   trailing: _loading
                       ? const SizedBox(
@@ -153,14 +154,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               )
             else
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(vertical: 48),
                 child: Column(
                   children: [
-                    Icon(Icons.manage_accounts_outlined, size: 52),
-                    SizedBox(height: 12),
+                    const Icon(Icons.manage_accounts_outlined, size: 52),
+                    const SizedBox(height: 12),
                     Text(
-                      'Sign in to manage your account settings.',
+                      _text('Sign in to manage your account settings.', 'سجل الدخول لإدارة إعدادات حسابك.'),
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Brand.muted),
                     ),
