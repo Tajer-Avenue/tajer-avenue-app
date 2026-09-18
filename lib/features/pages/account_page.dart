@@ -12,11 +12,13 @@ class AccountPage extends StatefulWidget {
     required this.onOpenSignIn,
     required this.onOpenCreateAccount,
     required this.onOpenMenu,
+    required this.isArabic,
   });
 
   final VoidCallback onOpenSignIn;
   final VoidCallback onOpenCreateAccount;
   final VoidCallback onOpenMenu;
+  final bool isArabic;
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -42,13 +44,14 @@ class _AccountPageState extends State<AccountPage> {
 
   String _firstName(User user) {
     final fullName = user.userMetadata?['full_name']?.toString().trim() ?? '';
-    if (fullName.isEmpty) return 'Member';
+    if (fullName.isEmpty) return widget.isArabic ? 'عضو' : 'Member';
     return fullName.split(RegExp(r'\s+')).first;
   }
 
   @override
   Widget build(BuildContext context) {
     final user = Supabase.instance.client.auth.currentUser;
+    String t(String en, String ar) => widget.isArabic ? ar : en;
 
     return SafeArea(
       child: ListView(
@@ -59,15 +62,12 @@ class _AccountPageState extends State<AccountPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Expanded(
-                  child: PageHeading(
-                    'Account',
-                    subtitle: 'Shop, sell and manage your activity',
-                  ),
+                Expanded(
+                  child: PageHeading(t('Account', 'الحساب'), subtitle: t('Shop, sell and manage your activity', 'تسوق وبع وأدر نشاطك')),
                 ),
                 IconButton.filledTonal(
                   onPressed: widget.onOpenMenu,
-                  tooltip: 'Menu',
+                  tooltip: t('Menu', 'القائمة'),
                   icon: const Icon(Icons.menu_rounded),
                 ),
               ],
@@ -83,8 +83,8 @@ class _AccountPageState extends State<AccountPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Welcome to Tajer Avenue',
+                Text(
+                  t('Welcome to Tajer Avenue', 'مرحباً بك في تاجر أفينيو'),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,
@@ -94,7 +94,7 @@ class _AccountPageState extends State<AccountPage> {
                 const SizedBox(height: 7),
                 Text(
                   user == null
-                      ? 'Sign in to save items, order and manage your store.'
+                      ? t('Sign in to save items, order and manage your store.', 'سجل الدخول لحفظ المنتجات والطلب وإدارة متجرك.')
                       : _firstName(user),
                   style: const TextStyle(color: Colors.white70),
                 ),
@@ -105,7 +105,7 @@ class _AccountPageState extends State<AccountPage> {
                       Expanded(
                         child: FilledButton.tonal(
                           onPressed: widget.onOpenSignIn,
-                          child: const Text('Sign in'),
+                          child: Text(t('Sign in', 'تسجيل الدخول')),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -116,7 +116,7 @@ class _AccountPageState extends State<AccountPage> {
                             foregroundColor: Colors.white,
                             side: const BorderSide(color: Colors.white70),
                           ),
-                          child: const Text('Create account'),
+                          child: Text(t('Create account', 'إنشاء حساب')),
                         ),
                       ),
                     ],
@@ -126,10 +126,10 @@ class _AccountPageState extends State<AccountPage> {
             ),
           ),
           const SizedBox(height: 20),
-          _tile(Icons.receipt_long_outlined, 'My orders'),
-          _tile(Icons.location_on_outlined, 'Addresses'),
+          _tile(Icons.receipt_long_outlined, t('My orders', 'طلباتي')),
+          _tile(Icons.location_on_outlined, t('Addresses', 'العناوين')),
           const SizedBox(height: 18),
-          const SectionTitle('For merchants'),
+          SectionTitle(t('For merchants', 'للتجار')),
           const SizedBox(height: 8),
           Card(
             elevation: 0,
@@ -139,12 +139,12 @@ class _AccountPageState extends State<AccountPage> {
               leading: const CircleAvatar(
                 child: Icon(Icons.storefront_rounded),
               ),
-              title: const Text(
-                'Open your store',
+              title: Text(
+                t('Open your store', 'افتح متجرك'),
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
-              subtitle: const Text(
-                'Products, services, orders and analytics',
+              subtitle: Text(
+                t('Products, services, orders and analytics', 'المنتجات والخدمات والطلبات والتحليلات'),
               ),
               trailing: const Icon(
                 Icons.arrow_forward_ios_rounded,
