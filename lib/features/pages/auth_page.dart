@@ -4,7 +4,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/brand.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+  const AuthPage({super.key, required this.onBack});
+
+  final VoidCallback onBack;
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -48,14 +50,14 @@ class _AuthPageState extends State<AuthPage> {
         if (response.session == null) {
           _message('Account created. Check your email to confirm your account.');
         } else {
-          Navigator.pop(context);
+          widget.onBack();
         }
       } else {
         await Supabase.instance.client.auth.signInWithPassword(
           email: email,
           password: password,
         );
-        if (mounted) Navigator.pop(context);
+        if (mounted) widget.onBack();
       }
     } on AuthException catch (error) {
       _message(error.message);
@@ -74,7 +76,10 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text(_signUp ? 'Create account' : 'Sign in')),
+        appBar: AppBar(
+          leading: IconButton(onPressed: widget.onBack, icon: const Icon(Icons.arrow_back_rounded)),
+          title: Text(_signUp ? 'Create account' : 'Sign in'),
+        ),
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(
