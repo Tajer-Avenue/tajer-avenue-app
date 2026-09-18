@@ -4,10 +4,14 @@ import '../../data/catalog.dart';
 import '../widgets/common.dart';
 
 class ExplorePage extends StatefulWidget {
-  const ExplorePage({required this.favorites, required this.onToggleFavorite, required this.preferredGender, super.key});
+  const ExplorePage({required this.favorites, required this.onToggleFavorite, required this.preferredGender, required this.isArabic, super.key});
   final Set<String> favorites;
   final ValueChanged<ProductItem> onToggleFavorite;
   final String? preferredGender;
+  final bool isArabic;
+
+  String text(String en, String ar) => isArabic ? ar : en;
+  String categoryLabel(String name) => isArabic ? const {'Fashion':'الأزياء','Beauty':'الجمال','Food':'الطعام','Services':'الخدمات'}[name] ?? name : name;
 
   @override
   State<ExplorePage> createState() => _ExplorePageState();
@@ -44,11 +48,11 @@ class _ExplorePageState extends State<ExplorePage> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const PageHeading('Categories', subtitle: 'Browse products and services by category'),
+          PageHeading(widget.text('Categories', 'الفئات'), subtitle: widget.text('Browse products and services by category', 'تصفح المنتجات والخدمات حسب الفئة')),
           const SizedBox(height: 18),
           TextField(
             onChanged: (value) => setState(() => query = value.trim()),
-            decoration: const InputDecoration(hintText: 'What are you looking for?', prefixIcon: Icon(Icons.search_rounded)),
+            decoration: InputDecoration(hintText: widget.text('What are you looking for?', 'عن ماذا تبحث؟'), prefixIcon: const Icon(Icons.search_rounded)),
           ),
           const SizedBox(height: 18),
           SizedBox(
@@ -60,14 +64,14 @@ class _ExplorePageState extends State<ExplorePage> {
               itemBuilder: (_, i) {
                 if (i == 0) {
                   return FilterChip(
-                    label: const Text('All'),
+                    label: Text(widget.text('All', 'الكل')),
                     selected: selectedCategory == null,
                     onSelected: (_) => setState(() => selectedCategory = null),
                   );
                 }
                 final category = categories[i - 1];
                 return FilterChip(
-                  label: Text(category.name),
+                  label: Text(widget.categoryLabel(category.name)),
                   avatar: Icon(category.icon, size: 17),
                   selected: selectedCategory == category.name,
                   onSelected: (_) => setState(() => selectedCategory = category.name),
@@ -78,7 +82,7 @@ class _ExplorePageState extends State<ExplorePage> {
           const SizedBox(height: 18),
           Expanded(
             child: filtered.isEmpty
-                ? const Center(child: Text('No results found'))
+                ? Center(child: Text(widget.text('No results found', 'لم يتم العثور على نتائج')))
                 : GridView.builder(
                     padding: const EdgeInsets.only(bottom: 24),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: .72, crossAxisSpacing: 12, mainAxisSpacing: 12),
