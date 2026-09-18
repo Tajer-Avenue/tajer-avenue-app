@@ -220,8 +220,7 @@ class _AppShellState extends State<AppShell> {
         bottomNavigationBar: _index == 5
             ? null
             : Directionality(
-                textDirection:
-                    _isArabic ? TextDirection.rtl : TextDirection.ltr,
+                textDirection: TextDirection.ltr,
                 child: NavigationBar(
                 selectedIndex: _index,
                 onDestinationSelected: (value) {
