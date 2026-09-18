@@ -7,13 +7,11 @@ import '../widgets/common.dart';
 class HomePage extends StatelessWidget {
   const HomePage({
     required this.onExplore,
-    required this.onOpenMenu,
     required this.isArabic,
     super.key,
   });
 
   final VoidCallback onExplore;
-  final VoidCallback onOpenMenu;
   final bool isArabic;
 
   String _text(String english, String arabic) =>
@@ -31,14 +29,10 @@ class HomePage extends StatelessWidget {
                   Text(Brand.wordmark, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, letterSpacing: 2)),
                   Text(Brand.submark, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 2, color: Brand.muted)),
                 ])),
-                IconButton.filledTonal(onPressed: () {}, icon: const Icon(Icons.notifications_none_rounded)),
-                const SizedBox(width: 8),
-                IconButton.filledTonal(onPressed: () => _showCart(context), icon: const Icon(Icons.shopping_bag_outlined)),
-                const SizedBox(width: 8),
                 IconButton.filledTonal(
-                  onPressed: onOpenMenu,
-                  tooltip: _text('Menu', 'القائمة'),
-                  icon: const Icon(Icons.menu_rounded),
+                  onPressed: () => _showCart(context),
+                  tooltip: _text('Cart', 'السلة'),
+                  icon: const Icon(Icons.shopping_bag_outlined),
                 ),
               ]),
             ),
