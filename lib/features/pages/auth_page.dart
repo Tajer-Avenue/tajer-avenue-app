@@ -13,6 +13,9 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
+  static const _emailRedirectUrl =
+      'https://tajer-avenue.github.io/tajer-avenue-app/';
+
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
@@ -44,6 +47,7 @@ class _AuthPageState extends State<AuthPage> {
         final response = await Supabase.instance.client.auth.signUp(
           email: email,
           password: password,
+          emailRedirectTo: _emailRedirectUrl,
           data: {'full_name': name},
         );
         if (!mounted) return;
@@ -132,5 +136,4 @@ class _AuthPageState extends State<AuthPage> {
           ),
         ),
       );
-
 }
