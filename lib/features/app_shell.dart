@@ -258,6 +258,9 @@ class _AppShellState extends State<AppShell> {
   Widget _buildDrawer() => Directionality(
         textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
         child: Drawer(
+        width: (MediaQuery.sizeOf(context).width * 0.64)
+            .clamp(250.0, 285.0)
+            .toDouble(),
         child: SafeArea(
           child: ListView(
             padding: EdgeInsets.zero,
