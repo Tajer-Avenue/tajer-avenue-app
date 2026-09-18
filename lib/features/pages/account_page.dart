@@ -8,9 +8,14 @@ import '../widgets/common.dart';
 import 'settings_page.dart';
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({super.key, required this.onOpenAuth});
+  const AccountPage({
+    super.key,
+    required this.onOpenSignIn,
+    required this.onOpenCreateAccount,
+  });
 
-  final VoidCallback onOpenAuth;
+  final VoidCallback onOpenSignIn;
+  final VoidCallback onOpenCreateAccount;
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -33,8 +38,6 @@ class _AccountPageState extends State<AccountPage> {
     _authSubscription?.cancel();
     super.dispose();
   }
-
-  void _openAuth() => widget.onOpenAuth();
 
   void _openSettings() {
     Navigator.of(context)
@@ -89,9 +92,26 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 if (user == null) ...[
                   const SizedBox(height: 18),
-                  FilledButton.tonal(
-                    onPressed: _openAuth,
-                    child: const Text('Sign in or create account'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.tonal(
+                          onPressed: widget.onOpenSignIn,
+                          child: const Text('Sign in'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: widget.onOpenCreateAccount,
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            side: const BorderSide(color: Colors.white70),
+                          ),
+                          child: const Text('Create account'),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ],
@@ -123,7 +143,7 @@ class _AccountPageState extends State<AccountPage> {
                 Icons.arrow_forward_ios_rounded,
                 size: 16,
               ),
-              onTap: user == null ? _openAuth : () {},
+              onTap: user == null ? widget.onOpenSignIn : () {},
             ),
           ),
         ],
