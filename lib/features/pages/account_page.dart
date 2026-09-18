@@ -5,7 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/brand.dart';
 import '../widgets/common.dart';
-import 'settings_page.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({
@@ -37,14 +36,6 @@ class _AccountPageState extends State<AccountPage> {
   void dispose() {
     _authSubscription?.cancel();
     super.dispose();
-  }
-
-  void _openSettings() {
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (_) => const SettingsPage()))
-        .then((_) {
-      if (mounted) setState(() {});
-    });
   }
 
   String _firstName(User user) {
@@ -120,7 +111,6 @@ class _AccountPageState extends State<AccountPage> {
           const SizedBox(height: 20),
           _tile(Icons.receipt_long_outlined, 'My orders'),
           _tile(Icons.location_on_outlined, 'Addresses'),
-          _tile(Icons.settings_outlined, 'Settings', onTap: _openSettings),
           const SizedBox(height: 18),
           const SectionTitle('For merchants'),
           const SizedBox(height: 8),
