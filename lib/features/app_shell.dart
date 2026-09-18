@@ -71,6 +71,50 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
+  void _openNotifications() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => Scaffold(
+          appBar: AppBar(
+            title: Text(_text('Notifications', 'الإشعارات')),
+          ),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.notifications_none_rounded,
+                    size: 56,
+                    color: Brand.accent,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    _text('No notifications yet', 'لا توجد إشعارات حالياً'),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    _text(
+                      'Updates about orders and stores will appear here.',
+                      'ستظهر هنا تحديثات الطلبات والمتاجر.',
+                    ),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Brand.muted),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _openSettings() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => const SettingsPage()),
@@ -90,7 +134,6 @@ class _AppShellState extends State<AppShell> {
     final pages = [
       HomePage(
         isArabic: _isArabic,
-        onOpenMenu: () => _scaffoldKey.currentState?.openEndDrawer(),
         onExplore: () => setState(() => _index = 1),
       ),
       ExplorePage(
@@ -105,6 +148,7 @@ class _AppShellState extends State<AppShell> {
       AccountPage(
         onOpenSignIn: () => _openAuth(signUp: false),
         onOpenCreateAccount: () => _openAuth(signUp: true),
+        onOpenMenu: () => _scaffoldKey.currentState?.openEndDrawer(),
       ),
       AuthPage(
         key: ValueKey(_authStartsWithSignUp),
@@ -209,6 +253,14 @@ class _AppShellState extends State<AppShell> {
                 ),
               ),
               const SizedBox(height: 10),
+              _drawerTile(
+                icon: Icons.notifications_none_rounded,
+                label: _text('Notifications', 'الإشعارات'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _openNotifications();
+                },
+              ),
               _drawerTile(
                 icon: Icons.settings_outlined,
                 label: _text('Settings', 'الإعدادات'),
