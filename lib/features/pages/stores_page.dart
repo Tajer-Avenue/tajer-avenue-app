@@ -18,6 +18,9 @@ class _StoresPageState extends State<StoresPage> {
   static const _savedStoresKey = 'saved_stores';
 
   String _text(String en, String ar) => widget.isArabic ? ar : en;
+  String _type(String value) => widget.isArabic ? const {'Streetwear':'أزياء الشارع','Home & Living':'المنزل والمعيشة','Beauty':'الجمال','Local Makers':'صنّاع محليون'}[value] ?? value : value;
+  String _city(String value) => widget.isArabic ? const {'Dubai':'دبي','Abu Dhabi':'أبوظبي','Sharjah':'الشارقة','Ajman':'عجمان'}[value] ?? value : value;
+  String _product(String value) => widget.isArabic ? const {'Everyday Oversized Tee':'تيشيرت أوفرسايز يومي','Sculpted Table Lamp':'مصباح طاولة منحوت','Signature Skin Set':'مجموعة العناية المميزة','Handmade Travel Pouch':'حقيبة سفر مصنوعة يدوياً'}[value] ?? value : value;
 
   final _searchController = TextEditingController();
   final Set<String> _savedStores = {};
@@ -143,7 +146,7 @@ class _StoresPageState extends State<StoresPage> {
                             ),
                           ),
                           Text(
-                            '${store.type} · ${store.city}',
+                            '${_type(store.type)} · ${_city(store.city)}',
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 11,
@@ -264,14 +267,14 @@ class _StoresPageState extends State<StoresPage> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  store.type,
+                  _type(store.type),
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 Text(
-                  '${store.city}, UAE',
+                  '${_city(store.city)}، الإمارات',
                   style: const TextStyle(color: Brand.muted),
                 ),
                 const SizedBox(height: 24),
@@ -282,7 +285,7 @@ class _StoresPageState extends State<StoresPage> {
                     .map(
                       (product) => Card(
                         child: ListTile(
-                          title: Text(product.name),
+                          title: Text(_product(product.name)),
                           trailing: Text(
                             'AED ${product.price.toStringAsFixed(0)}',
                           ),
