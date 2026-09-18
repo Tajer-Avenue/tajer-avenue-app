@@ -392,33 +392,37 @@ class _AppShellState extends State<AppShell> {
   }) {
     final color = foregroundColor ?? Brand.ink;
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
         child: Material(
           color: Brand.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(13),
           child: ListTile(
+            dense: true,
+            minTileHeight: 50,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(13),
             ),
             leading: Container(
-              width: 38,
-              height: 38,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: color),
+              child: Icon(icon, color: color, size: 20),
             ),
             title: Text(
               label,
               style: TextStyle(
-                fontWeight: FontWeight.w800,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
                 color: color,
               ),
             ),
             trailing: Icon(
               Icons.arrow_forward_ios_rounded,
-              size: 14,
+              size: 12,
               color: color,
             ),
             onTap: onTap,
