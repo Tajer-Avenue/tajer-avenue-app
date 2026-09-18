@@ -4,9 +4,11 @@ import '../../data/catalog.dart';
 import '../widgets/common.dart';
 
 class FavoritesPage extends StatelessWidget {
-  const FavoritesPage({required this.favorites, required this.onToggleFavorite, super.key});
+  const FavoritesPage({required this.favorites, required this.onToggleFavorite, required this.isArabic, super.key});
   final Set<String> favorites;
   final ValueChanged<ProductItem> onToggleFavorite;
+  final bool isArabic;
+  String text(String en, String ar) => isArabic ? ar : en;
 
   @override
   Widget build(BuildContext context) {
@@ -15,15 +17,15 @@ class FavoritesPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const PageHeading('Saved', subtitle: 'Your favorite finds in one place'),
+          PageHeading(text('Saved', 'المحفوظات'), subtitle: text('Your favorite finds in one place', 'كل ما حفظته في مكان واحد')),
           const SizedBox(height: 18),
           Expanded(
             child: saved.isEmpty
-                ? const Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.favorite_border_rounded, size: 54),
-                    SizedBox(height: 12),
-                    Text('No saved items yet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-                    Text('Tap the heart on a product to save it.'),
+                ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    const Icon(Icons.favorite_border_rounded, size: 54),
+                    const SizedBox(height: 12),
+                    Text(text('No saved items yet', 'لا توجد عناصر محفوظة بعد'), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+                    Text(text('Tap the heart on a product to save it.', 'اضغط على القلب لحفظ المنتج.')),
                   ]))
                 : GridView.builder(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: .72, crossAxisSpacing: 12, mainAxisSpacing: 12),
