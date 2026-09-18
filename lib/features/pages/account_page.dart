@@ -6,7 +6,9 @@ import '../widgets/common.dart';
 import 'auth_page.dart';
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({super.key});
+  const AccountPage({super.key, required this.onOpenAuth});
+
+  final VoidCallback onOpenAuth;
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -21,10 +23,7 @@ class _AccountPageState extends State<AccountPage> {
     });
   }
 
-  Future<void> _openAuth() async {
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthPage()));
-    if (mounted) setState(() {});
-  }
+  void _openAuth() => widget.onOpenAuth();
 
   Future<void> _signOut() async {
     await Supabase.instance.client.auth.signOut();
