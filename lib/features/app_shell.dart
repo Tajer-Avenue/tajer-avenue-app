@@ -90,7 +90,7 @@ class _AppShellState extends State<AppShell> {
     final pages = [
       HomePage(
         isArabic: _isArabic,
-        onOpenMenu: () => _scaffoldKey.currentState?.openDrawer(),
+        onOpenMenu: () => _scaffoldKey.currentState?.openEndDrawer(),
         onExplore: () => setState(() => _index = 1),
       ),
       ExplorePage(
@@ -114,14 +114,20 @@ class _AppShellState extends State<AppShell> {
     ];
 
     return Directionality(
-      textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+      textDirection: TextDirection.ltr,
       child: Scaffold(
         key: _scaffoldKey,
-        drawer: _index == 5 ? null : _buildDrawer(),
-        body: IndexedStack(index: _index, children: pages),
+        endDrawer: _index == 5 ? null : _buildDrawer(),
+        body: Directionality(
+          textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+          child: IndexedStack(index: _index, children: pages),
+        ),
         bottomNavigationBar: _index == 5
             ? null
-            : NavigationBar(
+            : Directionality(
+                textDirection:
+                    _isArabic ? TextDirection.rtl : TextDirection.ltr,
+                child: NavigationBar(
                 selectedIndex: _index,
                 onDestinationSelected: (value) {
                   setState(() => _index = value);
@@ -153,11 +159,14 @@ class _AppShellState extends State<AppShell> {
                   ),
                 ],
               ),
+            ),
       ),
     );
   }
 
-  Widget _buildDrawer() => Drawer(
+  Widget _buildDrawer() => Directionality(
+        textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+        child: Drawer(
         child: SafeArea(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -262,7 +271,8 @@ class _AppShellState extends State<AppShell> {
             ],
           ),
         ),
-      );
+      ),
+    );
 
   Widget _drawerTile({
     required IconData icon,
