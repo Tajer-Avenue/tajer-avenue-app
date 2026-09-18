@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/brand.dart';
 import '../widgets/common.dart';
-import 'auth_page.dart';
+import 'settings_page.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key, required this.onOpenAuth});
@@ -25,9 +25,12 @@ class _AccountPageState extends State<AccountPage> {
 
   void _openAuth() => widget.onOpenAuth();
 
-  Future<void> _signOut() async {
-    await Supabase.instance.client.auth.signOut();
-    if (mounted) setState(() {});
+  void _openSettings() {
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (_) => const SettingsPage()))
+        .then((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -53,17 +56,16 @@ class _AccountPageState extends State<AccountPage> {
                 user == null ? 'Sign in to save items, order and manage your store.' : (user.email ?? 'Signed in'),
                 style: const TextStyle(color: Colors.white70),
               ),
-              const SizedBox(height: 18),
-              if (user == null)
-                FilledButton.tonal(onPressed: _openAuth, child: const Text('Sign in or create account'))
-              else
-                FilledButton.tonal(onPressed: _signOut, child: const Text('Sign out')),
+              if (user == null) ...[
+                const SizedBox(height: 18),
+                FilledButton.tonal(onPressed: _openAuth, child: const Text('Sign in or create account')),
+              ],
             ]),
           ),
           const SizedBox(height: 20),
           _tile(Icons.receipt_long_outlined, 'My orders'),
           _tile(Icons.location_on_outlined, 'Addresses'),
-          _tile(Icons.settings_outlined, 'Settings'),
+          _tile(Icons.settings_outlined, 'Settings', onTap: _openSettings),
           const SizedBox(height: 18),
           const SectionTitle('For merchants'),
           const SizedBox(height: 8),
@@ -84,9 +86,14 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  Widget _tile(IconData icon, String label) => Card(
+  Widget _tile(IconData icon, String label, {VoidCallback? onTap}) => Card(
         elevation: 0,
         color: Brand.surface,
-        child: ListTile(leading: Icon(icon), title: Text(label), trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 15), onTap: () {}),
+        child: ListTile(
+          leading: Icon(icon),
+          title: Text(label),
+          trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 15),
+          onTap: onTap ?? () {},
+        ),
       );
 }
