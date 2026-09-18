@@ -7,9 +7,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/brand.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({super.key, required this.onBack});
+  const AuthPage({
+    super.key,
+    required this.onBack,
+    this.initialSignUp = false,
+  });
 
   final VoidCallback onBack;
+  final bool initialSignUp;
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -26,7 +31,7 @@ class _AuthPageState extends State<AuthPage> {
 
   Timer? _resendTimer;
   Timer? _rateLimitTimer;
-  bool _signUp = false;
+  late bool _signUp;
   bool _loading = false;
   bool _obscure = true;
   bool _awaitingConfirmation = false;
@@ -38,6 +43,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   void initState() {
     super.initState();
+    _signUp = widget.initialSignUp;
     _restoreEmailRateLimit();
   }
 
