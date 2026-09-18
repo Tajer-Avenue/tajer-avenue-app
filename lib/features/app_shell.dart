@@ -118,7 +118,7 @@ class _AppShellState extends State<AppShell> {
 
   Future<void> _openSettings() async {
     await Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const SettingsPage()),
+      MaterialPageRoute<void>(builder: (_) => SettingsPage(isArabic: _isArabic)),
     );
     if (mounted) setState(() {});
   }
@@ -186,20 +186,24 @@ class _AppShellState extends State<AppShell> {
         favorites: _favorites,
         onToggleFavorite: _toggleFavorite,
         preferredGender: preferredGender,
+        isArabic: _isArabic,
       ),
       FavoritesPage(
         favorites: _favorites,
         onToggleFavorite: _toggleFavorite,
+        isArabic: _isArabic,
       ),
-      const StoresPage(),
+      StoresPage(isArabic: _isArabic),
       AccountPage(
         onOpenSignIn: () => _openAuth(signUp: false),
         onOpenCreateAccount: () => _openAuth(signUp: true),
         onOpenMenu: () => _scaffoldKey.currentState?.openEndDrawer(),
+        isArabic: _isArabic,
       ),
       AuthPage(
         key: ValueKey(_authStartsWithSignUp),
         initialSignUp: _authStartsWithSignUp,
+        isArabic: _isArabic,
         onBack: () => setState(() => _index = 4),
       ),
     ];
