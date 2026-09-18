@@ -8,8 +8,8 @@ abstract final class Brand {
   static const tagline = "The UAE's digital avenue";
 
   static const ink = Color(0xFF121212);
-  static const canvas = Color(0xFFF6F5F1);
-  static const surface = Color(0xFFFFFFFF);
-  static const accent = Color(0xFFC7A96B);
-  static const muted = Color(0xFF6E6E6A);
+  static const canvas = Color(0xFFF7F2E8);
+  static const surface = Color(0xFFFFFDF8);
+  static const accent = Color(0xFFC9943E);
+  static const muted = Color(0xFF686158);
 }
