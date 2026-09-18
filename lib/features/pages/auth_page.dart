@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/brand.dart';
@@ -17,22 +18,33 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   static const _emailRedirectUrl =
       'https://tajer-avenue.github.io/tajer-avenue-app/';
+  static const _emailRateLimitUntilKey = 'email_rate_limit_until';
 
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
 
   Timer? _resendTimer;
+  Timer? _rateLimitTimer;
   bool _signUp = false;
   bool _loading = false;
   bool _obscure = true;
   bool _awaitingConfirmation = false;
   int _secondsRemaining = 60;
+  int _rateLimitSecondsRemaining = 0;
   String _pendingEmail = '';
+  DateTime? _emailRateLimitUntil;
+
+  @override
+  void initState() {
+    super.initState();
+    _restoreEmailRateLimit();
+  }
 
   @override
   void dispose() {
     _resendTimer?.cancel();
+    _rateLimitTimer?.cancel();
     _name.dispose();
     _email.dispose();
     _password.dispose();
@@ -46,6 +58,11 @@ class _AuthPageState extends State<AuthPage> {
 
     if (email.isEmpty || password.length < 6 || (_signUp && name.isEmpty)) {
       _message('Enter a valid email, name, and a password of at least 6 characters.');
+      return;
+    }
+
+    if (_signUp && _rateLimitSecondsRemaining > 0) {
+      _message(_rateLimitMessage);
       return;
     }
 
@@ -72,7 +89,7 @@ class _AuthPageState extends State<AuthPage> {
         if (mounted) widget.onBack();
       }
     } on AuthException catch (error) {
-      _message(_friendlyAuthError(error));
+      await _handleAuthError(error);
     } catch (_) {
       _message('Something went wrong. Please try again.');
     } finally {
@@ -107,6 +124,10 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Future<void> _resendConfirmation() async {
+    if (_rateLimitSecondsRemaining > 0) {
+      _message(_rateLimitMessage);
+      return;
+    }
     if (_secondsRemaining > 0 || _loading || _pendingEmail.isEmpty) return;
 
     setState(() => _loading = true);
@@ -121,7 +142,7 @@ class _AuthPageState extends State<AuthPage> {
       _startResendTimer();
       _message('A new confirmation email has been sent.');
     } on AuthException catch (error) {
-      _message(_friendlyAuthError(error));
+      await _handleAuthError(error);
     } catch (_) {
       _message('Something went wrong. Please try again.');
     } finally {
@@ -129,11 +150,77 @@ class _AuthPageState extends State<AuthPage> {
     }
   }
 
-  String _friendlyAuthError(AuthException error) {
-    if (error.message.toLowerCase().contains('email rate limit')) {
-      return 'Too many confirmation emails were requested. Please try again in one hour.';
+  Future<void> _restoreEmailRateLimit() async {
+    final preferences = await SharedPreferences.getInstance();
+    final savedUntil = preferences.getString(_emailRateLimitUntilKey);
+    if (savedUntil == null) return;
+
+    final until = DateTime.tryParse(savedUntil);
+    if (until == null || !until.isAfter(DateTime.now())) {
+      await preferences.remove(_emailRateLimitUntilKey);
+      return;
     }
-    return error.message;
+
+    _emailRateLimitUntil = until;
+    if (!mounted) return;
+    _updateRateLimitRemaining();
+    _startRateLimitTimer();
+  }
+
+  Future<void> _beginEmailRateLimit() async {
+    final until = DateTime.now().add(const Duration(hours: 1));
+    _emailRateLimitUntil = until;
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setString(_emailRateLimitUntilKey, until.toIso8601String());
+    if (!mounted) return;
+    _updateRateLimitRemaining();
+    _startRateLimitTimer();
+  }
+
+  void _startRateLimitTimer() {
+    _rateLimitTimer?.cancel();
+    _rateLimitTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      _updateRateLimitRemaining();
+      if (_rateLimitSecondsRemaining == 0) {
+        timer.cancel();
+        SharedPreferences.getInstance().then(
+          (preferences) => preferences.remove(_emailRateLimitUntilKey),
+        );
+      }
+    });
+  }
+
+  void _updateRateLimitRemaining() {
+    final until = _emailRateLimitUntil;
+    final remaining = until?.difference(DateTime.now()).inSeconds ?? 0;
+    if (!mounted) return;
+    setState(() {
+      _rateLimitSecondsRemaining = remaining > 0 ? remaining + 1 : 0;
+      if (_rateLimitSecondsRemaining == 0) _emailRateLimitUntil = null;
+    });
+  }
+
+  String get _formattedRateLimit {
+    final minutes = _rateLimitSecondsRemaining ~/ 60;
+    final seconds = _rateLimitSecondsRemaining % 60;
+    return '${minutes.toString().padLeft(2, '0')}:'
+        '${seconds.toString().padLeft(2, '0')}';
+  }
+
+  String get _rateLimitMessage =>
+      'Email limit reached. Please try again in $_formattedRateLimit.';
+
+  Future<void> _handleAuthError(AuthException error) async {
+    if (error.message.toLowerCase().contains('email rate limit')) {
+      await _beginEmailRateLimit();
+      _message(_rateLimitMessage);
+      return;
+    }
+    _message(error.message);
   }
 
   void _changeEmail() {
@@ -204,7 +291,9 @@ class _AuthPageState extends State<AuthPage> {
           ),
           const SizedBox(height: 28),
           FilledButton.tonal(
-            onPressed: _secondsRemaining == 0 && !_loading
+            onPressed: _secondsRemaining == 0 &&
+                    _rateLimitSecondsRemaining == 0 &&
+                    !_loading
                 ? _resendConfirmation
                 : null,
             child: Padding(
@@ -216,10 +305,12 @@ class _AuthPageState extends State<AuthPage> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : Text(
-                      _secondsRemaining > 0
-                          ? 'Resend email in 00:' +
-                              _secondsRemaining.toString().padLeft(2, '0')
-                          : 'Resend confirmation email',
+                      _rateLimitSecondsRemaining > 0
+                          ? 'Try again in $_formattedRateLimit'
+                          : _secondsRemaining > 0
+                              ? 'Resend email in 00:' +
+                                  _secondsRemaining.toString().padLeft(2, '0')
+                              : 'Resend confirmation email',
                     ),
             ),
           ),
@@ -283,6 +374,28 @@ class _AuthPageState extends State<AuthPage> {
               ),
             ),
           ),
+          if (_signUp && _rateLimitSecondsRemaining > 0) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Brand.accent.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.schedule_rounded, color: Brand.ink),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      _rateLimitMessage,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 20),
           FilledButton(
             onPressed: _loading ? null : _submit,
