@@ -5,8 +5,19 @@ import '../../data/catalog.dart';
 import '../widgets/common.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({required this.onExplore, super.key});
+  const HomePage({
+    required this.onExplore,
+    required this.onOpenMenu,
+    required this.isArabic,
+    super.key,
+  });
+
   final VoidCallback onExplore;
+  final VoidCallback onOpenMenu;
+  final bool isArabic;
+
+  String _text(String english, String arabic) =>
+      isArabic ? arabic : english;
 
   @override
   Widget build(BuildContext context) => SafeArea(
@@ -14,6 +25,12 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
           children: [
             Row(children: [
+              IconButton(
+                onPressed: onOpenMenu,
+                tooltip: _text('Menu', 'القائمة'),
+                icon: const Icon(Icons.menu_rounded),
+              ),
+              const SizedBox(width: 6),
               const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(Brand.wordmark, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, letterSpacing: 2)),
                 Text(Brand.submark, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 2, color: Brand.muted)),
@@ -26,7 +43,13 @@ class HomePage extends StatelessWidget {
             TextField(
               readOnly: true,
               onTap: onExplore,
-              decoration: const InputDecoration(hintText: 'Search products, services & stores', prefixIcon: Icon(Icons.search_rounded)),
+              decoration: InputDecoration(
+                hintText: _text(
+                  'Search products, services & stores',
+                  'ابحث عن المنتجات والخدمات والمتاجر',
+                ),
+                prefixIcon: const Icon(Icons.search_rounded),
+              ),
             ),
             const SizedBox(height: 20),
             Container(
@@ -49,7 +72,11 @@ class HomePage extends StatelessWidget {
               ]),
             ),
             const SizedBox(height: 24),
-            SectionTitle('Explore', action: 'See all', onTap: onExplore),
+            SectionTitle(
+              _text('Explore', 'استكشف'),
+              action: _text('See all', 'عرض الكل'),
+              onTap: onExplore,
+            ),
             SizedBox(
               height: 112,
               child: ListView.separated(
@@ -75,7 +102,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 26),
-            const SectionTitle('Trending stores'),
+            SectionTitle(_text('Trending stores', 'المتاجر الرائجة')),
             const SizedBox(height: 10),
             Row(children: [
               Expanded(child: _StorePreview(store: stores[0])),
@@ -83,7 +110,7 @@ class HomePage extends StatelessWidget {
               Expanded(child: _StorePreview(store: stores[1])),
             ]),
             const SizedBox(height: 26),
-            const SectionTitle('Nearby'),
+            SectionTitle(_text('Nearby', 'بالقرب منك')),
             const SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.all(18),
