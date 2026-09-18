@@ -11,16 +11,19 @@ class AuthPage extends StatefulWidget {
     super.key,
     required this.onBack,
     this.initialSignUp = false,
+    required this.isArabic,
   });
 
   final VoidCallback onBack;
   final bool initialSignUp;
+  final bool isArabic;
 
   @override
   State<AuthPage> createState() => _AuthPageState();
 }
 
 class _AuthPageState extends State<AuthPage> {
+  String _text(String en, String ar) => widget.isArabic ? ar : en;
   static const _emailRedirectUrl =
       'https://tajer-avenue.github.io/tajer-avenue-app/';
   static const _emailRateLimitUntilKey = 'email_rate_limit_until';
@@ -255,11 +258,7 @@ class _AuthPageState extends State<AuthPage> {
             onPressed: widget.onBack,
             icon: const Icon(Icons.arrow_back_rounded),
           ),
-          title: Text(
-            _awaitingConfirmation
-                ? 'Confirm your email'
-                : (_signUp ? 'Create account' : 'Sign in'),
-          ),
+          title: Text(_awaitingConfirmation ? _text('Confirm your email', 'تأكيد البريد الإلكتروني') : (_signUp ? _text('Create account', 'إنشاء حساب') : _text('Sign in', 'تسجيل الدخول'))),
         ),
         body: SafeArea(
           child: Center(
@@ -285,14 +284,14 @@ class _AuthPageState extends State<AuthPage> {
             color: Brand.accent,
           ),
           const SizedBox(height: 24),
-          const Text(
-            'Check your email',
+          Text(
+            _text('Check your email', 'تحقق من بريدك الإلكتروني'),
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 12),
           Text(
-            'We sent a confirmation link to\n$_pendingEmail',
+            _text('We sent a confirmation link to\n$_pendingEmail', 'أرسلنا رابط التأكيد إلى\n$_pendingEmail'),
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: Brand.muted,
@@ -321,14 +320,14 @@ class _AuthPageState extends State<AuthPage> {
                           : _secondsRemaining > 0
                               ? 'Resend email in 00:' +
                                   _secondsRemaining.toString().padLeft(2, '0')
-                              : 'Resend confirmation email',
+                              : _text('Resend confirmation email', 'إعادة إرسال رسالة التأكيد'),
                     ),
             ),
           ),
           const SizedBox(height: 10),
           TextButton(
             onPressed: _loading ? null : _changeEmail,
-            child: const Text('Use a different email'),
+            child: Text(_text('Use a different email', 'استخدام بريد إلكتروني آخر')),
           ),
         ],
       );
@@ -357,19 +356,19 @@ class _AuthPageState extends State<AuthPage> {
               controller: _name,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.name],
-              decoration: const InputDecoration(labelText: 'Full name'),
+              decoration: InputDecoration(labelText: _text('Full name', 'الاسم الكامل')),
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
               value: _gender,
-              decoration: const InputDecoration(
-                labelText: 'Gender',
+              decoration: InputDecoration(
+                labelText: _text('Gender', 'الجنس'),
                 prefixIcon: Icon(Icons.person_outline_rounded),
               ),
-              hint: const Text('Select gender'),
-              items: const [
-                DropdownMenuItem(value: 'male', child: Text('Male')),
-                DropdownMenuItem(value: 'female', child: Text('Female')),
+              hint: Text(_text('Select gender', 'اختر الجنس')),
+              items: [
+                DropdownMenuItem(value: 'male', child: Text(_text('Male', 'ذكر'))),
+                DropdownMenuItem(value: 'female', child: Text(_text('Female', 'أنثى'))),
               ],
               onChanged: _loading
                   ? null
@@ -382,7 +381,7 @@ class _AuthPageState extends State<AuthPage> {
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             autofillHints: const [AutofillHints.email],
-            decoration: const InputDecoration(labelText: 'Email'),
+            decoration: InputDecoration(labelText: _text('Email', 'البريد الإلكتروني')),
           ),
           const SizedBox(height: 12),
           TextField(
@@ -390,7 +389,7 @@ class _AuthPageState extends State<AuthPage> {
             obscureText: _obscure,
             onSubmitted: (_) => _loading ? null : _submit(),
             decoration: InputDecoration(
-              labelText: 'Password',
+              labelText: _text('Password', 'كلمة المرور'),
               suffixIcon: IconButton(
                 onPressed: () => setState(() => _obscure = !_obscure),
                 icon: Icon(
@@ -434,7 +433,7 @@ class _AuthPageState extends State<AuthPage> {
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(_signUp ? 'Create account' : 'Sign in'),
+                  : Text(_signUp ? _text('Create account', 'إنشاء حساب') : _text('Sign in', 'تسجيل الدخول')),
             ),
           ),
           const SizedBox(height: 10),
@@ -444,8 +443,8 @@ class _AuthPageState extends State<AuthPage> {
                 : () => setState(() => _signUp = !_signUp),
             child: Text(
               _signUp
-                  ? 'Already have an account? Sign in'
-                  : 'New to Tajer Avenue? Create account',
+                  ? _text('Already have an account? Sign in', 'لديك حساب بالفعل؟ سجل الدخول')
+                  : _text('New to Tajer Avenue? Create account', 'جديد في تاجر أفينيو؟ أنشئ حساباً'),
             ),
           ),
         ],
