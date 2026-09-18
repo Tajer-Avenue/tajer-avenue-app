@@ -131,6 +131,46 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
+  Future<void> _requestSignOut() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(_text('Sign out?', 'تسجيل الخروج؟')),
+        content: Text(
+          _text(
+            'Are you sure you want to sign out?',
+            'هل أنت متأكد من تسجيل الخروج؟',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(_text('Cancel', 'إلغاء')),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.red.shade700,
+            ),
+            child: Text(_text('Sign out', 'تسجيل الخروج')),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    try {
+      await Supabase.instance.client.auth.signOut();
+      if (mounted) setState(() => _index = 4);
+    } on AuthException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(error.message)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final preferredGender = Supabase.instance.client.auth.currentUser
@@ -327,6 +367,21 @@ class _AppShellState extends State<AppShell> {
                   if (value != null) _setLanguage(value);
                 },
               ),
+              if (Supabase.instance.client.auth.currentUser != null) ...[
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                  child: Divider(),
+                ),
+                _drawerTile(
+                  icon: Icons.logout_rounded,
+                  label: _text('Sign out', 'تسجيل الخروج'),
+                  foregroundColor: Colors.red.shade700,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _requestSignOut();
+                  },
+                ),
+              ],
             ],
           ),
         ),
@@ -337,8 +392,10 @@ class _AppShellState extends State<AppShell> {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
-  }) =>
-      Padding(
+    Color? foregroundColor,
+  }) {
+    final color = foregroundColor ?? Brand.ink;
+    return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
         child: Material(
           color: Brand.surface,
@@ -351,22 +408,26 @@ class _AppShellState extends State<AppShell> {
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: Brand.accent.withValues(alpha: 0.16),
+                color: color.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: Brand.ink),
+              child: Icon(icon, color: color),
             ),
             title: Text(
               label,
-              style: const TextStyle(fontWeight: FontWeight.w800),
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                color: color,
+              ),
             ),
-            trailing: const Icon(
+            trailing: Icon(
               Icons.arrow_forward_ios_rounded,
               size: 14,
-              color: Brand.accent,
+              color: color,
             ),
             onTap: onTap,
           ),
         ),
       );
+  }
 }
