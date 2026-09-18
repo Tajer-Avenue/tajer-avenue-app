@@ -24,21 +24,24 @@ class HomePage extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
           children: [
-            Row(children: [
-              IconButton(
-                onPressed: onOpenMenu,
-                tooltip: _text('Menu', 'القائمة'),
-                icon: const Icon(Icons.menu_rounded),
-              ),
-              const SizedBox(width: 6),
-              const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(Brand.wordmark, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, letterSpacing: 2)),
-                Text(Brand.submark, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 2, color: Brand.muted)),
-              ])),
-              IconButton.filledTonal(onPressed: () {}, icon: const Icon(Icons.notifications_none_rounded)),
-              const SizedBox(width: 8),
-              IconButton.filledTonal(onPressed: () => _showCart(context), icon: const Icon(Icons.shopping_bag_outlined)),
-            ]),
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: Row(children: [
+                const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(Brand.wordmark, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, letterSpacing: 2)),
+                  Text(Brand.submark, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 2, color: Brand.muted)),
+                ])),
+                IconButton.filledTonal(onPressed: () {}, icon: const Icon(Icons.notifications_none_rounded)),
+                const SizedBox(width: 8),
+                IconButton.filledTonal(onPressed: () => _showCart(context), icon: const Icon(Icons.shopping_bag_outlined)),
+                const SizedBox(width: 8),
+                IconButton.filledTonal(
+                  onPressed: onOpenMenu,
+                  tooltip: _text('Menu', 'القائمة'),
+                  icon: const Icon(Icons.menu_rounded),
+                ),
+              ]),
+            ),
             const SizedBox(height: 22),
             TextField(
               readOnly: true,
