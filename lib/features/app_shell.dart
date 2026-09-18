@@ -178,13 +178,13 @@ class _AppShellState extends State<AppShell> {
                 },
                 destinations: [
                   NavigationDestination(
-                    icon: const Icon(Icons.home_outlined),
-                    selectedIcon: const Icon(Icons.home_rounded),
-                    label: _text('Home', 'الرئيسية'),
+                    icon: const Icon(Icons.explore_outlined),
+                    selectedIcon: const Icon(Icons.explore_rounded),
+                    label: _text('Discover', 'اكتشف'),
                   ),
                   NavigationDestination(
                     icon: const Icon(Icons.grid_view_rounded),
-                    label: _text('Explore', 'استكشف'),
+                    label: _text('Categories', 'الفئات'),
                   ),
                   NavigationDestination(
                     icon: const Icon(Icons.favorite_border_rounded),
