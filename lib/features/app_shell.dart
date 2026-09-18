@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/catalog.dart';
 import 'pages/account_page.dart';
+import 'pages/auth_page.dart';
 import 'pages/explore_page.dart';
 import 'pages/favorites_page.dart';
 import 'pages/home_page.dart';
@@ -31,12 +32,13 @@ class _AppShellState extends State<AppShell> {
       ExplorePage(favorites: _favorites, onToggleFavorite: _toggleFavorite),
       FavoritesPage(favorites: _favorites, onToggleFavorite: _toggleFavorite),
       const StoresPage(),
-      const AccountPage(),
+      AccountPage(onOpenAuth: () => setState(() => _index = 5)),
+      AuthPage(onBack: () => setState(() => _index = 4)),
     ];
 
     return Scaffold(
       body: IndexedStack(index: _index, children: pages),
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: _index == 5 ? null : NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: (value) => setState(() => _index = value),
         destinations: const [
