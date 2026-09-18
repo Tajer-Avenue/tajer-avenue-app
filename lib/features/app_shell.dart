@@ -304,7 +304,6 @@ class _AppShellState extends State<AppShell> {
                 icon: Icons.notifications_none_rounded,
                 label: _text('Notifications', 'الإشعارات'),
                 onTap: () {
-                  Navigator.of(context).pop();
                   _openNotifications();
                 },
               ),
@@ -312,7 +311,6 @@ class _AppShellState extends State<AppShell> {
                 icon: Icons.settings_outlined,
                 label: _text('Settings', 'الإعدادات'),
                 onTap: () {
-                  Navigator.of(context).pop();
                   _openSettings();
                 },
               ),
@@ -320,7 +318,6 @@ class _AppShellState extends State<AppShell> {
                 icon: Icons.report_problem_outlined,
                 label: _text('Report a problem', 'الإبلاغ عن مشكلة'),
                 onTap: () {
-                  Navigator.of(context).pop();
                   _openReportProblem();
                 },
               ),
@@ -377,8 +374,7 @@ class _AppShellState extends State<AppShell> {
                   label: _text('Sign out', 'تسجيل الخروج'),
                   foregroundColor: Colors.red.shade700,
                   onTap: () {
-                    Navigator.of(context).pop();
-                    _requestSignOut();
+                      _requestSignOut();
                   },
                 ),
               ],
