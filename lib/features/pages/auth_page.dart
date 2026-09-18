@@ -38,6 +38,7 @@ class _AuthPageState extends State<AuthPage> {
   int _secondsRemaining = 60;
   int _rateLimitSecondsRemaining = 0;
   String _pendingEmail = '';
+  String? _gender;
   DateTime? _emailRateLimitUntil;
 
   @override
@@ -62,8 +63,12 @@ class _AuthPageState extends State<AuthPage> {
     final password = _password.text;
     final name = _name.text.trim();
 
-    if (email.isEmpty || password.length < 6 || (_signUp && name.isEmpty)) {
-      _message('Enter a valid email, name, and a password of at least 6 characters.');
+    if (email.isEmpty ||
+        password.length < 6 ||
+        (_signUp && (name.isEmpty || _gender == null))) {
+      _message(_signUp
+          ? 'Enter your name, gender, a valid email, and a password of at least 6 characters.'
+          : 'Enter a valid email and a password of at least 6 characters.');
       return;
     }
 
@@ -79,7 +84,7 @@ class _AuthPageState extends State<AuthPage> {
           email: email,
           password: password,
           emailRedirectTo: _emailRedirectUrl,
-          data: {'full_name': name},
+          data: {'full_name': name, 'gender': _gender},
         );
         if (!mounted) return;
         if (response.session == null) {
@@ -353,6 +358,22 @@ class _AuthPageState extends State<AuthPage> {
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.name],
               decoration: const InputDecoration(labelText: 'Full name'),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              value: _gender,
+              decoration: const InputDecoration(
+                labelText: 'Gender',
+                prefixIcon: Icon(Icons.person_outline_rounded),
+              ),
+              hint: const Text('Select gender'),
+              items: const [
+                DropdownMenuItem(value: 'male', child: Text('Male')),
+                DropdownMenuItem(value: 'female', child: Text('Female')),
+              ],
+              onChanged: _loading
+                  ? null
+                  : (value) => setState(() => _gender = value),
             ),
             const SizedBox(height: 12),
           ],
