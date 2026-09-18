@@ -6,7 +6,9 @@ import '../../data/catalog.dart';
 import '../widgets/common.dart';
 
 class StoresPage extends StatefulWidget {
-  const StoresPage({super.key});
+  const StoresPage({required this.isArabic, super.key});
+
+  final bool isArabic;
 
   @override
   State<StoresPage> createState() => _StoresPageState();
@@ -14,6 +16,8 @@ class StoresPage extends StatefulWidget {
 
 class _StoresPageState extends State<StoresPage> {
   static const _savedStoresKey = 'saved_stores';
+
+  String _text(String en, String ar) => widget.isArabic ? ar : en;
 
   final _searchController = TextEditingController();
   final Set<String> _savedStores = {};
@@ -72,10 +76,7 @@ class _StoresPageState extends State<StoresPage> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
         children: [
-          const PageHeading(
-            'Stores',
-            subtitle: 'Independent businesses across the UAE',
-          ),
+          PageHeading(_text('Stores', 'المتاجر'), subtitle: _text('Independent businesses across the UAE', 'مشاريع مستقلة في جميع أنحاء الإمارات')),
           const SizedBox(height: 18),
           TextField(
             controller: _searchController,
@@ -83,12 +84,12 @@ class _StoresPageState extends State<StoresPage> {
               setState(() => _query = value.trim().toLowerCase());
             },
             decoration: InputDecoration(
-              hintText: 'Search stores, categories or cities',
+              hintText: _text('Search stores, categories or cities', 'ابحث عن متجر أو فئة أو مدينة'),
               prefixIcon: const Icon(Icons.search_rounded),
               suffixIcon: _query.isEmpty
                   ? null
                   : IconButton(
-                      tooltip: 'Clear search',
+                      tooltip: _text('Clear search', 'مسح البحث'),
                       onPressed: () {
                         _searchController.clear();
                         setState(() => _query = '');
@@ -99,7 +100,7 @@ class _StoresPageState extends State<StoresPage> {
           ),
           if (savedStores.isNotEmpty) ...[
             const SizedBox(height: 24),
-            const SectionTitle('Saved stores'),
+            SectionTitle(_text('Saved stores', 'المتاجر المحفوظة')),
             const SizedBox(height: 10),
             SizedBox(
               height: 118,
@@ -158,18 +159,18 @@ class _StoresPageState extends State<StoresPage> {
           ],
           const SizedBox(height: 24),
           SectionTitle(
-            _query.isEmpty ? 'All stores' : 'Search results',
+            _query.isEmpty ? _text('All stores', 'جميع المتاجر') : _text('Search results', 'نتائج البحث'),
           ),
           const SizedBox(height: 10),
           if (filteredStores.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 48),
               child: Column(
                 children: [
-                  Icon(Icons.store_mall_directory_outlined, size: 52),
-                  SizedBox(height: 12),
+                  const Icon(Icons.store_mall_directory_outlined, size: 52),
+                  const SizedBox(height: 12),
                   Text(
-                    'No stores found',
+                    _text('No stores found', 'لم يتم العثور على متاجر'),
                     style: TextStyle(
                       color: Brand.muted,
                       fontWeight: FontWeight.w700,
@@ -212,7 +213,7 @@ class _StoresPageState extends State<StoresPage> {
           ),
           subtitle: Text('${store.type} · ${store.city}'),
           trailing: IconButton(
-            tooltip: isSaved ? 'Remove from saved stores' : 'Save store',
+            tooltip: isSaved ? _text('Remove from saved stores', 'إزالة من المتاجر المحفوظة') : _text('Save store', 'حفظ المتجر'),
             onPressed: () => _toggleSaved(store),
             icon: Icon(
               isSaved
@@ -274,7 +275,7 @@ class _StoresPageState extends State<StoresPage> {
                   style: const TextStyle(color: Brand.muted),
                 ),
                 const SizedBox(height: 24),
-                const SectionTitle('Products & services'),
+                SectionTitle(_text('Products & services', 'المنتجات والخدمات')),
                 const SizedBox(height: 10),
                 ...products
                     .where((product) => product.store == store.name)
