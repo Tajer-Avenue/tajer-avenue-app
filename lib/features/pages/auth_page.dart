@@ -70,8 +70,8 @@ class _AuthPageState extends State<AuthPage> {
         password.length < 6 ||
         (_signUp && (name.isEmpty || _gender == null))) {
       _message(_signUp
-          ? 'Enter your name, gender, a valid email, and a password of at least 6 characters.'
-          : 'Enter a valid email and a password of at least 6 characters.');
+          ? _text('Enter your name, gender, a valid email, and a password of at least 6 characters.', 'أدخل اسمك وجنسك وبريداً إلكترونياً صالحاً وكلمة مرور من 6 أحرف على الأقل.')
+          : _text('Enter a valid email and a password of at least 6 characters.', 'أدخل بريداً إلكترونياً صالحاً وكلمة مرور من 6 أحرف على الأقل.'));
       return;
     }
 
@@ -105,7 +105,7 @@ class _AuthPageState extends State<AuthPage> {
     } on AuthException catch (error) {
       await _handleAuthError(error);
     } catch (_) {
-      _message('Something went wrong. Please try again.');
+      _message(_text('Something went wrong. Please try again.', 'حدث خطأ ما. حاول مرة أخرى.'));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -154,7 +154,7 @@ class _AuthPageState extends State<AuthPage> {
       if (!mounted) return;
       setState(() => _secondsRemaining = 60);
       _startResendTimer();
-      _message('A new confirmation email has been sent.');
+      _message(_text('A new confirmation email has been sent.', 'تم إرسال رسالة تأكيد جديدة.'));
     } on AuthException catch (error) {
       await _handleAuthError(error);
     } catch (_) {
@@ -225,8 +225,7 @@ class _AuthPageState extends State<AuthPage> {
         '${seconds.toString().padLeft(2, '0')}';
   }
 
-  String get _rateLimitMessage =>
-      'Email limit reached. Please try again in $_formattedRateLimit.';
+  String get _rateLimitMessage => _text('Email limit reached. Please try again in $_formattedRateLimit.', 'تم بلوغ حد البريد الإلكتروني. حاول مرة أخرى خلال $_formattedRateLimit.');
 
   Future<void> _handleAuthError(AuthException error) async {
     if (error.message.toLowerCase().contains('email rate limit')) {
@@ -316,10 +315,9 @@ class _AuthPageState extends State<AuthPage> {
                     )
                   : Text(
                       _rateLimitSecondsRemaining > 0
-                          ? 'Try again in $_formattedRateLimit'
+                          ? _text('Try again in $_formattedRateLimit', 'حاول مرة أخرى خلال $_formattedRateLimit')
                           : _secondsRemaining > 0
-                              ? 'Resend email in 00:' +
-                                  _secondsRemaining.toString().padLeft(2, '0')
+                              ? _text('Resend email in 00:${_secondsRemaining.toString().padLeft(2, '0')}', 'إعادة الإرسال خلال 00:${_secondsRemaining.toString().padLeft(2, '0')}')
                               : _text('Resend confirmation email', 'إعادة إرسال رسالة التأكيد'),
                     ),
             ),
