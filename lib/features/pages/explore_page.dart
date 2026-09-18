@@ -11,7 +11,7 @@ class ExplorePage extends StatefulWidget {
   final bool isArabic;
 
   String text(String en, String ar) => isArabic ? ar : en;
-  String categoryLabel(String name) => isArabic ? const {'Fashion':'الأزياء','Beauty':'الجمال','Food':'الطعام','Services':'الخدمات'}[name] ?? name : name;
+  String categoryLabel(String name) => isArabic ? const {'Fashion':'الأزياء','Beauty':'الجمال','Food':'الطعام','Services':'الخدمات','Home':'المنزل'}[name] ?? name : name;
 
   @override
   State<ExplorePage> createState() => _ExplorePageState();
