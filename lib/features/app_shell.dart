@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/brand.dart';
 import '../data/catalog.dart';
@@ -115,10 +116,11 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  void _openSettings() {
-    Navigator.of(context).push(
+  Future<void> _openSettings() async {
+    await Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => const SettingsPage()),
     );
+    if (mounted) setState(() {});
   }
 
   void _openReportProblem() {
@@ -131,14 +133,19 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
+    final preferredGender = Supabase.instance.client.auth.currentUser
+        ?.userMetadata?['gender']
+        ?.toString();
     final pages = [
       HomePage(
         isArabic: _isArabic,
+        preferredGender: preferredGender,
         onExplore: () => setState(() => _index = 1),
       ),
       ExplorePage(
         favorites: _favorites,
         onToggleFavorite: _toggleFavorite,
+        preferredGender: preferredGender,
       ),
       FavoritesPage(
         favorites: _favorites,
