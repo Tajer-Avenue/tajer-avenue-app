@@ -90,12 +90,12 @@ class HomePage extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: const Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.end, children: [
-                Text(Brand.tagline, style: TextStyle(color: Colors.white60, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.4)),
-                SizedBox(height: 8),
-                Text("Discover what's\nnext.", style: TextStyle(color: Colors.white, fontSize: 34, height: 1, fontWeight: FontWeight.w800)),
-                SizedBox(height: 12),
-                Text('Local brands · Services · New drops', style: TextStyle(color: Colors.white70)),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.end, children: [
+                const Text(Brand.tagline, style: TextStyle(color: Colors.white60, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.4)),
+                const SizedBox(height: 8),
+                Text(_text("Discover what's\nnext.", 'اكتشف كل\nما هو جديد.'), style: const TextStyle(color: Colors.white, fontSize: 34, height: 1, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 12),
+                Text(_text('Local brands · Services · New drops', 'علامات محلية · خدمات · أحدث المنتجات'), style: const TextStyle(color: Colors.white70)),
               ]),
             ),
             const SizedBox(height: 24),
@@ -142,12 +142,12 @@ class HomePage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(color: Brand.surface, borderRadius: BorderRadius.circular(22)),
-              child: const Row(children: [
-                CircleAvatar(backgroundColor: Color(0xFFF0F0ED), child: Icon(Icons.location_on_outlined, color: Brand.ink)),
-                SizedBox(width: 14),
+              child: Row(children: [
+                const CircleAvatar(backgroundColor: Color(0xFFF0F0ED), child: Icon(Icons.location_on_outlined, color: Brand.ink)),
+                const SizedBox(width: 14),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Find businesses around you', style: TextStyle(fontWeight: FontWeight.w700)),
-                  Text('Explore stores and services across the UAE', style: TextStyle(fontSize: 12, color: Brand.muted)),
+                  Text(_text('Find businesses around you', 'اكتشف المشاريع من حولك'), style: const TextStyle(fontWeight: FontWeight.w700)),
+                  Text(_text('Explore stores and services across the UAE', 'استكشف المتاجر والخدمات في جميع أنحاء الإمارات'), style: const TextStyle(fontSize: 12, color: Brand.muted)),
                 ])),
               ]),
             ),
@@ -159,14 +159,14 @@ class HomePage extends StatelessWidget {
   void _showCart(BuildContext context) => showModalBottomSheet<void>(
         context: context,
         showDragHandle: true,
-        builder: (_) => const Padding(
+        builder: (_) => Padding(
           padding: EdgeInsets.fromLTRB(24, 8, 24, 36),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.shopping_bag_outlined, size: 44),
-            SizedBox(height: 12),
-            Text('Your cart is empty', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
-            SizedBox(height: 6),
-            Text('Items from different Tajer Avenue stores will appear here.', textAlign: TextAlign.center),
+            const Icon(Icons.shopping_bag_outlined, size: 44),
+            const SizedBox(height: 12),
+            Text(_text('Your cart is empty', 'سلتك فارغة'), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 6),
+            Text(_text('Items from different Tajer Avenue stores will appear here.', 'ستظهر هنا المنتجات من متاجر تاجر أفينيو المختلفة.'), textAlign: TextAlign.center),
           ]),
         ),
       );
